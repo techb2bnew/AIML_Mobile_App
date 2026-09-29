@@ -7,10 +7,13 @@ import { style as fontStyle, spacings } from '../../constant/Fonts';
 import {
   accentSoft,
   appBg,
+  borderColor,
+  cardBg,
   dangerColor,
   dangerSoft,
   textBody,
   textDark,
+  shadowColor,
   textMuted,
 } from '../../constant/Color';
 import { widthPercentageToDP as wp } from '../../utils';
@@ -129,6 +132,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           <ProfileListItem
             iconName="logout"
             label={LOGOUT}
+            isLast
             onPress={() => setIsLogoutVisible(true)}
           />
         </View>
@@ -139,6 +143,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation }) => {
             label={DELETE_ACCOUNT}
             danger
             showChevron={false}
+            isLast
             onPress={() => setIsDeleteVisible(true)}
           />
         </View>
@@ -179,11 +184,12 @@ const styles = StyleSheet.create({
     backgroundColor: appBg,
   },
   scrollContent: {
+    paddingHorizontal: spacings.large,
+    paddingTop: spacings.large,
     paddingBottom: spacings.xxLarge,
   },
   errorBanner: {
-    marginHorizontal: spacings.large,
-    marginTop: spacings.large,
+    marginBottom: spacings.large,
     backgroundColor: dangerSoft,
     borderRadius: 10,
     padding: spacings.normalx,
@@ -195,9 +201,17 @@ const styles = StyleSheet.create({
   },
   avatarSection: {
     ...BaseStyle.alignJustifyCenter,
-    ...BaseStyle.surfaceGradientBg,
-    paddingVertical: spacings.xxLarge,
-    marginBottom: spacings.xLarge,
+    backgroundColor: cardBg,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor,
+    paddingVertical: spacings.xLarge,
+    marginBottom: spacings.large,
+    shadowColor,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   avatar: {
     ...BaseStyle.alignJustifyCenter,
@@ -235,7 +249,12 @@ const styles = StyleSheet.create({
     ...fontStyle.fontWeightThin1x,
   },
   listGroup: {
-    marginBottom: spacings.xLarge,
+    backgroundColor: cardBg,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor,
+    overflow: 'hidden',
+    marginBottom: spacings.large,
   },
 });
 
