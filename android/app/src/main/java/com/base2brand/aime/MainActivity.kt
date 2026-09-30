@@ -1,4 +1,4 @@
-package com.aime
+package com.base2brand.aime
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

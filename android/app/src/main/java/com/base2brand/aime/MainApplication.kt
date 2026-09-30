@@ -1,4 +1,4 @@
-package com.aime
+package com.base2brand.aime
 
 import android.app.Application
 import com.facebook.react.PackageList

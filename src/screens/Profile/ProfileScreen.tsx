@@ -29,6 +29,7 @@ import {
   DELETE_ACCOUNT_CONFIRM,
   DELETE_ACCOUNT_MESSAGE,
   DELETE_ACCOUNT_TITLE,
+  ASSISTANT_VOICE,
   ERROR_GENERIC,
   LOGOUT,
   LOGOUT_CONFIRM,
@@ -119,6 +120,11 @@ const ProfileScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={styles.listGroup}>
+          <ProfileListItem
+            iconName="account-voice"
+            label={ASSISTANT_VOICE}
+            onPress={() => navigation.navigate(ROUTES.VOICE_SETTINGS)}
+          />
           <ProfileListItem
             iconName="shield-check-outline"
             label={PRIVACY_POLICY}

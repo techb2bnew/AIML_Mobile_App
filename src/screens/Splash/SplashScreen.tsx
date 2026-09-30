@@ -18,6 +18,7 @@ import { widthPercentageToDP as wp } from '../../utils';
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES, RootStackParamList } from '../../navigation/routes';
 import { APP_DISPLAY_NAME, SPLASH_TAGLINE } from '../../constants/text/en';
+import { hasSeenOnboarding } from '../../services/storage/onboardingStorage';
 import Loader from '../../components/Loader/Loader';
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.SPLASH>;
@@ -60,14 +61,21 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
       return undefined;
     }
 
-    const timer = setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: session ? ROUTES.MAIN : ROUTES.LOGIN }],
-      });
-    }, MIN_SPLASH_DURATION_MS);
+    // First-time visitors (no session, intro never seen) get the onboarding
+    // slides before the login form.
+    let isCancelled = false;
+    const minimumDelay = new Promise<void>(resolve => setTimeout(resolve, MIN_SPLASH_DURATION_MS));
+    Promise.all([hasSeenOnboarding(), minimumDelay]).then(([hasSeen]) => {
+      if (isCancelled) {
+        return;
+      }
+      const target = session ? ROUTES.MAIN : hasSeen ? ROUTES.LOGIN : ROUTES.ONBOARDING;
+      navigation.reset({ index: 0, routes: [{ name: target }] });
+    });
 
-    return () => clearTimeout(timer);
+    return () => {
+      isCancelled = true;
+    };
   }, [isHydrating, session, navigation]);
 
   return (

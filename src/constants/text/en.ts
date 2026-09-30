@@ -3,6 +3,29 @@ export const APP_DISPLAY_NAME = 'AIME';
 export const SPLASH_TAGLINE = 'Your voice-first AI assistant';
 
 // Auth / Login screen
+export const ONBOARDING_SKIP = 'Skip';
+export const ONBOARDING_NEXT = 'Next';
+export const ONBOARDING_GET_STARTED = 'Get Started';
+export const ONBOARDING_SLIDES = [
+  {
+    illustration: 'talk',
+    title: 'Just talk',
+    body: 'Tap the mic and speak naturally. No typing, so your hands and eyes stay free.',
+  },
+  {
+    illustration: 'listen',
+    title: 'Hear the answer',
+    body: 'AIME replies out loud and keeps listening, so it feels like a real conversation.',
+  },
+  {
+    illustration: 'voice',
+    title: 'Make it yours',
+    body: 'Pick the voice you like best from your Profile. Your chat history stays with you.',
+  },
+] as const;
+export const ONBOARDING_SAMPLE_QUESTION = 'What is my task?';
+export const ONBOARDING_SAMPLE_ANSWER_LINES = ['You have 3 tasks today.', 'Your first one is ready.'];
+export const ONBOARDING_SAMPLE_VOICES = ['Aria', 'Daniel', 'Samantha'];
 export const LOGIN_TITLE = 'Welcome back';
 export const LOGIN_SUBTITLE = 'Sign in to talk to your AI assistant';
 export const EMAIL_LABEL = 'Email';
@@ -39,6 +62,11 @@ export const ERROR_GENERIC = 'Something went wrong. Please try again.';
 
 // Profile screen
 export const PROFILE_TITLE = 'Profile';
+export const ASSISTANT_VOICE = 'Assistant Voice';
+export const VOICE_SETTINGS_HINT = 'Tap a voice to hear it. Your choice is used for every spoken reply.';
+export const VOICE_DEFAULT_LABEL = 'Default';
+export const VOICE_PREVIEW_SAMPLE = 'Hello, this is how your assistant will sound.';
+export const VOICE_NONE_FOUND = 'No English voices are installed on this device. Add one in your phone\'s text-to-speech settings.';
 export const PROFILE_ROLE_LABEL = 'Role';
 export const PROFILE_EMAIL_LABEL = 'Email';
 export const PRIVACY_POLICY = 'Privacy Policy';

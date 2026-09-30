@@ -1,13 +1,59 @@
 import { Platform } from 'react-native';
 import Tts from 'react-native-tts';
 import { AiVoiceConfig } from '../../types/user';
+import { getPreferredVoiceId } from './VoicePreference';
 
 // Text-to-speech interface. `realTextToSpeechService` wraps react-native-tts;
 // VoiceService only depends on this shape, so a different provider can be
 // dropped in later without touching any caller.
 export interface TextToSpeechService {
-  speak: (text: string, voice: AiVoiceConfig) => Promise<void>;
+  // `systemVoiceId` overrides the user's saved voice (used by the picker's
+  // preview); otherwise the saved choice, then the built-in default, applies.
+  speak: (text: string, voice: AiVoiceConfig, systemVoiceId?: string) => Promise<void>;
 }
+
+export interface SystemVoice {
+  id: string;
+  label: string;
+  language: string;
+}
+
+const LANGUAGE_LABELS: Record<string, string> = {
+  'en-us': 'English (US)',
+  'en-gb': 'English (UK)',
+  'en-in': 'English (India)',
+  'en-au': 'English (Australia)',
+  'en-ca': 'English (Canada)',
+  'en-ie': 'English (Ireland)',
+  'en-za': 'English (South Africa)',
+};
+
+const languageLabel = (language: string) =>
+  LANGUAGE_LABELS[language.toLowerCase().replace('_', '-')] ?? language;
+
+// iOS ships joke voices ("Bad News", "Bells", "Boing", "Zarvox"...) under this
+// id prefix; they have no place in a work assistant.
+const NOVELTY_VOICE_ID_PREFIX = 'com.apple.speech.synthesis.voice';
+
+// English voices actually installed on this device. iOS gives real names
+// ("Samantha"); Android only gives engine ids like `en-us-x-iom-local`, so
+// those are numbered per language instead of shown raw.
+export const listSystemVoices = async (): Promise<SystemVoice[]> => {
+  const all = await Tts.voices();
+  const usable = all
+    .filter(v => v.language?.toLowerCase().startsWith('en') && !v.notInstalled && !v.id.startsWith(NOVELTY_VOICE_ID_PREFIX))
+    .sort((a, b) => a.language.localeCompare(b.language) || a.id.localeCompare(b.id));
+
+  const perLanguage: Record<string, number> = {};
+  return usable.map(v => {
+    const label = languageLabel(v.language);
+    if (Platform.OS === 'ios') {
+      return { id: v.id, label: `${v.name} · ${label}`, language: v.language };
+    }
+    perLanguage[v.language] = (perLanguage[v.language] ?? 0) + 1;
+    return { id: v.id, label: `${label} · Voice ${perLanguage[v.language]}`, language: v.language };
+  });
+};
 
 // Safety net in case `tts-finish` never fires for some reason — sized
 // generously above the mock duration formula so it never cuts real speech
@@ -50,8 +96,9 @@ const ensureInitialized = (): Promise<void> => {
 };
 
 export const realTextToSpeechService: TextToSpeechService = {
-  speak: async (text, voice) => {
+  speak: async (text, voice, systemVoiceId) => {
     await ensureInitialized();
+    const chosenVoiceId = systemVoiceId ?? (await getPreferredVoiceId());
 
     return new Promise(resolve => {
       let isSettled = false;
@@ -88,8 +135,15 @@ export const realTextToSpeechService: TextToSpeechService = {
       // react-native-tts (iOS rejects the listener registration outright),
       // so playback failures fall through to the timeout above instead.
 
+      // Language first: on both platforms it resets the active voice, so the
+      // chosen voice has to be applied after it. A chosen system voice keeps
+      // its natural pitch — the male/female pitch shift is only for the
+      // built-in default.
       Tts.setDefaultLanguage(voice.language).catch(() => undefined);
-      Tts.setDefaultPitch(voice.pitch).catch(() => undefined);
+      if (chosenVoiceId) {
+        Tts.setDefaultVoice(chosenVoiceId).catch(() => undefined);
+      }
+      Tts.setDefaultPitch(chosenVoiceId ? 1 : voice.pitch).catch(() => undefined);
       Tts.setDefaultRate(voice.rate).catch(() => undefined);
       Tts.speak(text);
     });

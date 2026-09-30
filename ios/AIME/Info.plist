@@ -39,6 +39,8 @@
 	<string>AIME needs microphone access so you can talk to your AI assistant.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>AIME uses speech recognition to turn what you say into text for your AI assistant.</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -60,8 +62,6 @@
 		<string>Montserrat-BoldItalic.ttf</string>
 		<string>arialnarrow.ttf</string>
 	</array>
-	<key>RCTNewArchEnabled</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
