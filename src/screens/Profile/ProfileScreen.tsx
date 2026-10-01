@@ -160,6 +160,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation }) => {
         title={DELETE_ACCOUNT_TITLE}
         message={DELETE_ACCOUNT_MESSAGE}
         confirmLabel={DELETE_ACCOUNT_CONFIRM}
+        iconName="trash-can-outline"
         loading={isDeleting}
         onConfirm={handleDeleteAccount}
         onCancel={() => setIsDeleteVisible(false)}
@@ -170,6 +171,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation }) => {
         title={LOGOUT_TITLE}
         message={LOGOUT_MESSAGE}
         confirmLabel={LOGOUT_CONFIRM}
+        iconName="logout"
         loading={isLoggingOut}
         onConfirm={handleLogout}
         onCancel={() => setIsLogoutVisible(false)}

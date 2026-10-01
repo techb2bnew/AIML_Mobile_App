@@ -12,13 +12,23 @@ const resolveBaseUrl = (): string => {
   return API_BASE_URL;
 };
 
-export const BASE_URL = resolveBaseUrl();
+// A trailing slash in .env would otherwise produce `//api/...` URLs.
+export const BASE_URL = resolveBaseUrl().replace(/\/+$/, '');
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
   token?: string;
 }
+
+// Called when an authenticated request comes back 401, i.e. the token has
+// expired or been revoked. AuthContext registers the handler that logs the
+// user out. Requests without a token (the login call itself) never trigger
+// it, so a wrong password isn't mistaken for an expired session.
+let unauthorizedHandler: (() => void) | null = null;
+export const setUnauthorizedHandler = (handler: (() => void) | null) => {
+  unauthorizedHandler = handler;
+};
 
 export class ApiError extends Error {
   status: number;
@@ -59,6 +69,22 @@ export const request = async <T>(path: string, options: RequestOptions = {}): Pr
 
   if (__DEV__) {
     console.warn(`[API response] ${method} ${url} (${response.status})`, parsedBody);
+  }
+
+  // A web server (e.g. a frontend on the wrong port) answers every path with
+  // its index.html and a 200. Without this check that "succeeds" with an HTML
+  // string, login gets no token, and nothing says why.
+  const contentType = response.headers.get('content-type') ?? '';
+  if (response.ok && contentType.includes('text/html')) {
+    throw new ApiError(
+      response.status,
+      undefined,
+      `${url} returned a web page, not the API. Check API_BASE_URL in .env.`,
+    );
+  }
+
+  if (response.status === 401 && options.token) {
+    unauthorizedHandler?.();
   }
 
   if (!response.ok) {

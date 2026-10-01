@@ -35,6 +35,7 @@ export const PASSWORD_PLACEHOLDER = 'Enter your password';
 export const LOGIN_BUTTON = 'Login';
 export const LOGGING_IN = 'Signing in...';
 export const LOGIN_ERROR_EMPTY = 'Please enter both email and password';
+export const SESSION_EXPIRED = 'Your session has expired. Please log in again.';
 export const LOGIN_ERROR_INVALID = 'Invalid email or password';
 
 // Main assistant screen

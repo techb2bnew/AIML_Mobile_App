@@ -10,7 +10,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BaseStyle } from '../../constant/Style';
 import { style as fontStyle, spacings } from '../../constant/Fonts';
-import { authMutedColor, splashBgColor, whiteColor } from '../../constant/Color';
+import { authMutedColor, dangerColor, splashBgColor, whiteColor } from '../../constant/Color';
 import { ROUTES, RootStackParamList } from '../../navigation/routes';
 import { useAuth } from '../../context/AuthContext';
 import { ApiError, login } from '../../services/api/authApi';
@@ -28,12 +28,13 @@ import {
   LOGIN_TITLE,
   PASSWORD_LABEL,
   PASSWORD_PLACEHOLDER,
+  SESSION_EXPIRED,
 } from '../../constants/text/en';
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.LOGIN>;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { login: setSession } = useAuth();
+  const { login: setSession, sessionExpired } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +69,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.brand}>{APP_DISPLAY_NAME}</Text>
         <Text style={styles.title}>{LOGIN_TITLE}</Text>
         <Text style={styles.subtitle}>{LOGIN_SUBTITLE}</Text>
+        {sessionExpired && <Text style={styles.expiredNotice}>{SESSION_EXPIRED}</Text>}
 
         <View style={styles.form}>
           <TextInputField
@@ -125,6 +127,12 @@ const styles = StyleSheet.create({
     ...fontStyle.fontSizeNormal1x,
     marginTop: spacings.xsmall,
     marginBottom: spacings.xxLarge,
+  },
+  expiredNotice: {
+    color: dangerColor,
+    ...fontStyle.fontSizeSmall2x,
+    marginTop: -spacings.normalx,
+    marginBottom: spacings.large,
   },
   form: {
     width: '100%',

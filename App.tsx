@@ -8,6 +8,7 @@ import { StatusBar } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { navigationRef } from './src/navigation/navigationRef';
 import RootNavigator from './src/navigation/RootNavigator';
 import { AuthProvider } from './src/context/AuthContext';
 import { AssistantProvider } from './src/context/AssistantContext';
@@ -20,7 +21,7 @@ function App() {
       <StatusBar barStyle="dark-content" />
       <AuthProvider>
         <AssistantProvider>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <RootNavigator />
           </NavigationContainer>
         </AssistantProvider>
