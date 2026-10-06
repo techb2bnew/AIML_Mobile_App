@@ -1,24 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BaseStyle } from '../../constant/Style';
-import { style as fontStyle, spacings } from '../../constant/Fonts';
 import {
-  accentColor,
-  brandWashSoft,
-  dangerColor,
+  neuralBlue,
+  neuralCyan,
+  neuralMagenta,
+  neuralViolet,
   onAccent,
-  textMuted,
 } from '../../constant/Color';
 import { widthPercentageToDP as wp } from '../../utils';
 import { AssistantState } from '../../types/conversation';
-import {
-  STATE_ERROR,
-  STATE_IDLE,
-  STATE_LISTENING,
-  STATE_PROCESSING,
-  STATE_SPEAKING,
-} from '../../constants/text/en';
 
 interface VoiceOrbProps {
   state: AssistantState;
@@ -26,15 +18,17 @@ interface VoiceOrbProps {
   onPress: () => void;
 }
 
-const STATE_LABEL: Record<AssistantState, string> = {
-  idle: STATE_IDLE,
-  listening: STATE_LISTENING,
-  processing: STATE_PROCESSING,
-  speaking: STATE_SPEAKING,
-  error: STATE_ERROR,
+// The orb takes the same colour as the neural core behind it, so the two
+// always read as one thing reacting to the same state.
+const STATE_COLOR: Record<AssistantState, string> = {
+  idle: neuralViolet,
+  listening: neuralCyan,
+  processing: neuralMagenta,
+  speaking: neuralBlue,
+  error: '#ef4444',
 };
 
-const ORB_SIZE = wp(22);
+const ORB_SIZE = wp(19);
 
 const VoiceOrb: React.FC<VoiceOrbProps> = ({ state, disabled, onPress }) => {
   const pulse = useRef(new Animated.Value(1)).current;
@@ -47,17 +41,18 @@ const VoiceOrb: React.FC<VoiceOrbProps> = ({ state, disabled, onPress }) => {
       return undefined;
     }
 
+    const duration = state === 'processing' ? 500 : 650;
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulse, {
-          toValue: 1.15,
-          duration: state === 'processing' ? 500 : 650,
+          toValue: 1.16,
+          duration,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(pulse, {
           toValue: 1,
-          duration: state === 'processing' ? 500 : 650,
+          duration,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
@@ -68,30 +63,33 @@ const VoiceOrb: React.FC<VoiceOrbProps> = ({ state, disabled, onPress }) => {
     return () => loop.stop();
   }, [state, pulse]);
 
-  const ringColor = state === 'error' ? dangerColor : accentColor;
+  const color = STATE_COLOR[state];
 
   return (
     <View style={BaseStyle.alignJustifyCenter}>
       <Animated.View
         style={[
           styles.ring,
-          { borderColor: ringColor, transform: [{ scale: pulse }] },
+          { borderColor: color, backgroundColor: `${color}22`, transform: [{ scale: pulse }] },
         ]}
       >
         <TouchableOpacity
           activeOpacity={0.85}
           disabled={disabled}
           onPress={onPress}
-          style={[styles.orb, { backgroundColor: ringColor }, disabled && styles.orbDisabled]}
+          style={[
+            styles.orb,
+            { backgroundColor: color, shadowColor: color },
+            disabled && styles.orbDisabled,
+          ]}
         >
           <Icon
             name={state === 'error' ? 'microphone-off' : 'microphone'}
-            size={wp(9)}
+            size={wp(8)}
             color={onAccent}
           />
         </TouchableOpacity>
       </Animated.View>
-      <Text style={styles.stateLabel}>{STATE_LABEL[state]}</Text>
     </View>
   );
 };
@@ -102,23 +100,20 @@ const styles = StyleSheet.create({
     width: ORB_SIZE + 24,
     height: ORB_SIZE + 24,
     borderRadius: (ORB_SIZE + 24) / 2,
-    borderWidth: 2,
-    backgroundColor: brandWashSoft,
+    borderWidth: 1.5,
   },
   orb: {
     ...BaseStyle.alignJustifyCenter,
     width: ORB_SIZE,
     height: ORB_SIZE,
     borderRadius: ORB_SIZE / 2,
+    shadowOpacity: 0.8,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 10,
   },
   orbDisabled: {
     opacity: 0.6,
-  },
-  stateLabel: {
-    marginTop: spacings.normalx,
-    color: textMuted,
-    ...fontStyle.fontSizeNormal,
-    ...fontStyle.fontWeightThin1x,
   },
 });
 

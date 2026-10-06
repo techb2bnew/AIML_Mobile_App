@@ -1,5 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { appBg } from '../constant/Color';
 import { ROUTES, RootStackParamList } from './routes';
 import SplashScreen from '../screens/Splash/SplashScreen';
 import OnboardingScreen from '../screens/Onboarding/OnboardingScreen';
@@ -13,7 +14,7 @@ import TermsOfServiceScreen from '../screens/Legal/TermsOfServiceScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator: React.FC = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false, contentStyle: { backgroundColor: appBg } }}>
     <Stack.Screen name={ROUTES.SPLASH} component={SplashScreen} />
     <Stack.Screen name={ROUTES.ONBOARDING} component={OnboardingScreen} />
     <Stack.Screen name={ROUTES.LOGIN} component={LoginScreen} />

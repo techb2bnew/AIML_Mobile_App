@@ -223,7 +223,9 @@ const styles = StyleSheet.create({
     padding: spacings.normalx,
     borderRadius: 20,
     borderTopLeftRadius: 6,
-    backgroundColor: whiteColor,
+    backgroundColor: authInputBg,
+    borderWidth: 1,
+    borderColor: 'rgba(170,178,235,0.35)',
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 20,
@@ -245,7 +247,7 @@ const styles = StyleSheet.create({
   },
   aiName: {
     flex: 1,
-    color: '#141924',
+    color: '#E8ECF8',
     ...fontStyle.fontSizeNormal1x,
     ...fontStyle.fontWeightMedium,
   },
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: brandWashSoft,
   },
   aiText: {
-    color: '#3C4453',
+    color: '#C5CBE0',
     ...fontStyle.fontSizeNormal1x,
     lineHeight: 22,
   },

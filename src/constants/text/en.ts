@@ -89,12 +89,15 @@ export const DELETE_ACCOUNT_CANCEL = 'Cancel';
 export const DELETE_ACCOUNT_SUCCESS = 'Your account has been deleted.';
 
 // Legal placeholder content
-export const PRIVACY_POLICY_BODY =
-  'This is placeholder privacy policy content. It explains how AIME collects, uses, and protects your voice data, profile information, and conversation history. Replace this text with the final legal content when it is available.';
-export const TERMS_OF_SERVICE_BODY =
-  'This is placeholder terms of service content. It explains the rules for using the AIME voice assistant, including acceptable use, account responsibilities, and limitations of liability. Replace this text with the final legal content when it is available.';
 
 // Common
 export const BACK = 'Back';
 export const OK = 'OK';
 export const CANCEL = 'Cancel';
+
+// Assistant screen — neural theme
+export const NEURAL_OS_LABEL = 'ENTERPRISE NEURAL OS';
+export const MESSAGE_SENDER_YOU = 'You';
+export const MESSAGE_SENDER_AI = 'AI Agent';
+export const MESSAGE_COPY = 'Copy';
+export const MESSAGE_COPIED = 'Copied';

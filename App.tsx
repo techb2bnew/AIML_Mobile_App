@@ -18,7 +18,7 @@ enableScreens();
 function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       <AuthProvider>
         <AssistantProvider>
           <NavigationContainer ref={navigationRef}>
